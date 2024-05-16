@@ -1,56 +1,97 @@
+from string import ascii_lowercase
+
 QUESTIONS = {
-    "Which team has won most NBA conference championships?"[
-        "A.Miami Heat" "B. Los Angeles Lakers" "C. Boston Celtics" "D. Denver Nuggets"
+    "Which team has won most NBA conference championships?": [
+        "Miami Heat",
+        "Los Angeles Lakers",
+        "Boston Celtics",
+        "Denver Nuggets",
     ],
-    "Who holds the record for the most points scored over their career?"[
-        "A. Kareem Abdul-Jabbar" "B. Karl Malone" "C. LeBron James" "D. Michael Jordan"
+    "Who holds the record for the most points scored over their career?": [
+        "Kareem Abdul-Jabbar",
+        "Karl Malone",
+        "LeBron James",
+        "Michael Jordan",
     ],
-    "Which player was drafted #1 at the 2003 NBA Draft?"[
-        "A. Chris Bosh" "B. Darko Milicic" "C. LeBron James" "D. Dwyane Wade"
+    "Which player was drafted #1 at the 2003 NBA Draft?": [
+        "Chris Bosh",
+        "Darko Milicic",
+        "LeBron James",
+        "Dwyane Wade",
     ],
-    "Which of these franchises never relocated?"[
-        "A. Toronto Raptors"
-        "B. Memphis Grizzlies"
-        "C. Atlanta Hawks"
-        "D. Los Angeles Clippers"
+    "Which of these franchises never relocated?": [
+        "Toronto Raptors",
+        "Memphis Grizzlies",
+        "Atlanta Hawks",
+        "Los Angeles Clippers",
     ],
-    "Who holds the record for most rebounds in one season?"[
-        "A. Bill Russell" "B. Ben Wallace" "C. Shaquille O'Neal" "D. Wilt Chamberlain"
+    "Who holds the record for most rebounds in one season?": [
+        "Bill Russell",
+        "Ben Wallace",
+        "Shaquille O'Neal",
+        "Wilt Chamberlain",
     ],
-    "Which player was Magic Johnson's teammate on the Lakers?"[
-        "A. A.C. Green" "B. Jerry West" "C. Kobe Bryant" "D. Robert Parish"
+    "Which player was Magic Johnson's teammate on the Lakers?": [
+        "A.C. Green",
+        "Jerry West",
+        "Kobe Bryant",
+        "Robert Parish",
     ],
-    "During which decade was the 24-second shot clock introduced in the NBA?"[
-        "A. 1950s" "B. 1960s" "C. 1970s" "D. 1980s"
+    "During which decade was the 24-second shot clock introduced in the NBA?": [
+        "1950s",
+        "1960s",
+        "1970s",
+        "1980s",
     ],
-    "Which player has won four MVPs in five years?"[
-        "A. Michael Jordan" "B. Larry Bird" "C. Wilt Chamberlain" "D. Bill Russell"
+    "Which player has won four MVPs in five years?": [
+        "Michael Jordan",
+        "Larry Bird",
+        "Wilt Chamberlain",
+        "Bill Russell",
     ],
-    "Which player has never won a Defensive Player of the Year Award?"[
-        "A. Tim Duncan" "B. Kevin Garnett" "C. Dennis Rodman" "D. Michael Jordan"
+    "Which player has never won a Defensive Player of the Year Award?": [
+        "Tim Duncan",
+        "Kevin Garnett",
+        "Dennis Rodman",
+        "Michael Jordan",
     ],
-    "Which player played his entire career with the same franchise?"[
-        "A. Michael Jordan" "B. Reggie Miller" "C. Karl Malone" "D. Tim Duncan"
+    "Which player played his entire career with the same franchise?": [
+        "Michael Jordan",
+        "Reggie Miller",
+        "Karl Malone",
+        "Tim Duncan",
     ],
-    "Which city hosted the first NBA All-Star Game, back in 1951?"[
-        "A. New York" "B. Boston" "C. St. Louis" "D. Los Angeles"
+    "Which city hosted the first NBA All-Star Game, back in 1951?": [
+        "New York",
+        "Boston",
+        "St. Louis",
+        "Los Angeles",
     ],
-    "Who holds the record for most career steals in the NBA?"[
-        "A. John Stockton" "B. Jason Kidd" "C. Gary Payton" "D. Scottie Pippen"
+    "Who holds the record for most career steals in the NBA?": [
+        "John Stockton",
+        "Jason Kidd",
+        "Gary Payton",
+        "Scottie Pippen",
     ],
-    "Which of these coaches has the highest career winning percentage?"[
-        "A. Red Auerbach" "B. Phil Jackson" "C. Pat Riley" "D. Chuck Daly"
+    "Which of these coaches has the highest career winning percentage?": [
+        "Red Auerbach",
+        "Phil Jackson",
+        "Pat Riley",
+        "Chuck Daly",
     ],
 }
-for question, alternatives in QUESTIONS.items():
+
+for num, (question, alternatives) in enumerate(QUESTIONS.items(), start=1):
+    print(f"\nQuestion {num}:")
+    print(f"{question}?")
     correct_answer = alternatives[0]
-    sorted_alternatives = sorted(alternatives)
-    for label, alternative in enumerate(sorted_alternatives):
-         print(f"  {label}) {alternative}")
-         
-    answer_label = int(input(f"{question}? "))
-    answer = sorted_alternatives[answer_label]
+    labeled_alternatives = dict(zip(ascii_lowercase, sorted(alternatives)))
+    for label, alternative in labeled_alternatives.items():
+        print(f"  {label}) {alternative}")
+
+    answer_label = input("\nChoice? ")
+    answer = labeled_alternatives.get(answer_label)
     if answer == correct_answer:
-        print("Correct!")
+        print("⭐ Correct! ⭐")
     else:
         print(f"The answer is {correct_answer!r}, not {answer!r}")
