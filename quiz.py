@@ -1,110 +1,60 @@
+# quiz.py
+
+import pathlib
 import random
 from string import ascii_lowercase
 
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib
+
 NUM_QUESTIONS_PER_QUIZ = 5
-QUESTIONS = {
-    "Which team has won most NBA conference championships?": [
-        "Miami Heat",
-        "Los Angeles Lakers",
-        "Boston Celtics",
-        "Denver Nuggets",
-    ],
-    "Who holds the record for the most points scored over their career?": [
-        "Kareem Abdul-Jabbar",
-        "Karl Malone",
-        "LeBron James",
-        "Michael Jordan",
-    ],
-    "Which player was drafted #1 at the 2003 NBA Draft?": [
-        "Chris Bosh",
-        "Darko Milicic",
-        "LeBron James",
-        "Dwyane Wade",
-    ],
-    "Which of these franchises never relocated?": [
-        "Toronto Raptors",
-        "Memphis Grizzlies",
-        "Atlanta Hawks",
-        "Los Angeles Clippers",
-    ],
-    "Who holds the record for most rebounds in one season?": [
-        "Bill Russell",
-        "Ben Wallace",
-        "Shaquille O'Neal",
-        "Wilt Chamberlain",
-    ],
-    "Which player was Magic Johnson's teammate on the Lakers?": [
-        "A.C. Green",
-        "Jerry West",
-        "Kobe Bryant",
-        "Robert Parish",
-    ],
-    "During which decade was the 24-second shot clock introduced in the NBA?": [
-        "1950s",
-        "1960s",
-        "1970s",
-        "1980s",
-    ],
-    "Which player has won four MVPs in five years?": [
-        "Michael Jordan",
-        "Larry Bird",
-        "Wilt Chamberlain",
-        "Bill Russell",
-    ],
-    "Which player has never won a Defensive Player of the Year Award?": [
-        "Tim Duncan",
-        "Kevin Garnett",
-        "Dennis Rodman",
-        "Michael Jordan",
-    ],
-    "Which player played his entire career with the same franchise?": [
-        "Michael Jordan",
-        "Reggie Miller",
-        "Karl Malone",
-        "Tim Duncan",
-    ],
-    "Which city hosted the first NBA All-Star Game, back in 1951?": [
-        "New York",
-        "Boston",
-        "St. Louis",
-        "Los Angeles",
-    ],
-    "Who holds the record for most career steals in the NBA?": [
-        "John Stockton",
-        "Jason Kidd",
-        "Gary Payton",
-        "Scottie Pippen",
-    ],
-    "Which of these coaches has the highest career winning percentage?": [
-        "Red Auerbach",
-        "Phil Jackson",
-        "Pat Riley",
-        "Chuck Daly",
-    ],
-}
+QUESTIONS_PATH = pathlib.Path(__file__).parent / "questions.toml"
 
-num_questions = min(NUM_QUESTIONS_PER_QUIZ, len(QUESTIONS))
-questions = random.sample(list(QUESTIONS.items()), k=num_questions)
 
-num_correct = 0
-for num, (question, alternatives) in enumerate(questions, start=1):
-    print(f"\nQuestion {num}:")
+def run_quiz():
+    questions = prepare_questions(QUESTIONS_PATH, num_questions=NUM_QUESTIONS_PER_QUIZ)
+
+    num_correct = 0
+    for num, question in enumerate(questions, start=1):
+        print(f"\nQuestion {num}:")
+        num_correct += ask_question(question)
+
+    print(f"\nYou got {num_correct} correct out of {num} questions")
+
+
+def prepare_questions(path, num_questions):
+    questions = tomllib.loads(path.read_text())["questions"]
+    num_questions = min(num_questions, len(questions))
+    return random.sample(questions, k=num_questions)
+
+
+def ask_question(question):
+    correct_answer = question["answer"]
+    alternatives = [question["answer"]] + question["alternatives"]
+    ordered_alternatives = random.sample(alternatives, k=len(alternatives))
+
+    answer = get_answer(question["question"], ordered_alternatives)
+    if answer == correct_answer:
+        print("⭐ Correct! ⭐")
+        return 1
+    else:
+        print(f"The answer is {correct_answer!r}, not {answer!r}")
+        return 0
+
+
+def get_answer(question, alternatives):
     print(f"{question}?")
-    correct_answer = alternatives[0]
-    labeled_alternatives = dict(
-        zip(ascii_lowercase, random.sample(alternatives, k=len(alternatives)))
-    )
+    labeled_alternatives = dict(zip(ascii_lowercase, alternatives))
     for label, alternative in labeled_alternatives.items():
         print(f"  {label}) {alternative}")
 
     while (answer_label := input("\nChoice? ")) not in labeled_alternatives:
         print(f"Please answer one of {', '.join(labeled_alternatives)}")
 
-    answer = labeled_alternatives[answer_label]
-    if answer == correct_answer:
-        num_correct += 1
-        print("⭐ Correct! ⭐")
-    else:
-        print(f"The answer is {correct_answer!r}, not {answer!r}")
+    return labeled_alternatives[answer_label]
 
-print(f"\nYou got {num_correct} correct out of {num} questions")
+
+if __name__ == "__main__":
+    run_quiz()
